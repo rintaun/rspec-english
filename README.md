@@ -46,7 +46,9 @@ version works.
 ## Future
 I would like to rewrite this so that it takes into account a rudimentary model
 of a normal English sentence, in order to fix defect 2, above. Other
-suggestions are, of course, welcome.
+suggestions are, of course, welcome. One benefit of doing it this way is that
+it will obsolete the modification to `RSpec::Core.context` and will slim down
+some of the other modifications a bit.
 
 In addition, I would like to eventually modify descriptions and join them with
 conjunctions where possible, e.g. turning "when one thing when another thing"
