@@ -14,7 +14,6 @@ describe RSpec do
     context 'WHen rspec-english is available' do
         it 'outputs real English' do
             RSpec.english.should be_true
-            end
         end
     end
 end
