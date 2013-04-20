@@ -14,34 +14,24 @@ module ::RSpec
         class Metadata < Hash
             module GroupMetadataHash
                 def full_description
-                    desc_parts = container_stack.reverse.collect { |a|
-                        this_part = a[:description_args]
-                        this_part = this_part.join(' ')
-                        if a[:type] == :context
-                            def this_part.after?; end
-                        end
-                        this_part
-                    }
+                    front = []
+                    back = []
+                    container_stack.reverse.each do |part|
+                        target = part[:type] == :context ? back : front
+                        target.push part[:description_args]
+                    end
+                    [front, back].map {|s| [do_build_description(*s.flatten)] }
                 end
             end
             module MetadataHash
+                alias_method :do_build_description, :build_description_from
+
                 def build_description_from(context, *parts)
-                    front = []
-                    if context.is_a?(Array)
-                        context.each do |this_part|
-                            if this_part.respond_to? :after?
-                                parts.push this_part
-                            else
-                                front.push this_part
-                            end
-                        end
-                    else
-                        parts.unshift context
-                    end
-                    front.reverse.each do |part|
-                        parts.unshift part
-                    end
-                    parts.join(' ')
+                    context = [[context], [""]] unless context.is_a? Array
+                    front, back = context
+                    parts = front + parts + back
+                    parts.delete_if(&:empty?)
+                    do_build_description parts.shift, *parts
                 end
             end
         end
